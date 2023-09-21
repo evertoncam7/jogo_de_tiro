@@ -24,27 +24,68 @@
         .cena{
             position: relative;
             width: 300px;
-            height: 500px;
+            height: 600px;
             background: #3754b6;
         }
 
         .inimigo{
             position:absolute;
-            width: 20px;
-            height: 40px;
-            background: greenyellow;
+           
+            width: 12px;
+            height: 60px;
+            background: red;
+            border-radius: 5px 5px 10px 10px;
+        }
+
+        .inimigo-as1{
+            position: relative;
+            top: 10px;
+            left: calc(50% - 35px);
+            width: 70px;
+            height: 15px;
+            background: #fff;
+            border-radius: 2px 2px 5px 5px;
+        }
+
+        .inimigo-as2{
+            position: relative;
+            left: calc(50% - 15px);
+            top: 35px;
+            width: 30px;
+            height: 7px;
+            background: #fff;
+            border-radius: 2px 2px 3px 3px;
         }
 
         .player{
             position: absolute;
-            left: calc(50% - 10px);
+            left: calc(50% - 6px);
             bottom: 120px;
-            width: 20px;
-            height: 40px;
-            background: #fff;
+            width: 12px;
+            height: 60px;
+            background: rgb(0, 255, 115);
+            border-radius: 20px 20px 15px 15px;
         }
 
-       
+        .as1{
+            position: relative;
+            top: 10px;
+            left: calc(50% - 35px);
+            width: 70px;
+            height: 15px;
+            background: #fff;
+            border-radius: 2px 2px 5px 5px;
+        }
+
+        .as2{
+            position: relative;
+            left: calc(50% - 15px);
+            top: 35px;
+            width: 30px;
+            height: 7px;
+            background: #fff;
+            border-radius: 2px 2px 3px 3px;
+        }
 
         .controle{
             position: absolute;
@@ -126,39 +167,238 @@
 
     const arrayInimigos = [];
 
-    function AeroInimigo(){
+    function AeroInimigo(pl){
 
-        const a = c("div", 'inimigo');
+        let inimigo = null;
+        let altitude = 0;
+        let x = 0;
+        let y = 0;
+
+        let veloc = -100;
+        let dLeft = Math.floor(Math.random() * 280);
+
+        let coordenadasPlayer = pl;
+    
+        function render(){
+
+            const a = c("div", 'inimigo');
+            const as1 = c("div", 'inimigo-as1');
+            const as2 = c("div", 'inimigo-as2');
+        
+            a.appendChild(as1);
+            a.appendChild(as2);
+
+            return a;
+        }
+
+        inimigo = render();
 
 
+        function update(){
 
-        function atirar(){
+            updatePositionPlayer();
+        
 
-
+            requestAnimationFrame(update);
 
         }
 
-        return a;
+        update();
+
+        function velocidade(){
+
+            const v = [1,2,3,4];
+
+            
+
+            function aceleracao(){
+
+                inimigo.style.top = veloc+"px";
+
+                requestAnimationFrame(aceleracao);
+
+                veloc += 0.2;
+
+            }
+
+            aceleracao();
+
+        }
+
+        velocidade()
+
+        function direcao(){
+
+            let direc = 1;
+
+            setInterval(function(){
+
+                direc = Math.floor(Math.random() * 3);
+
+            }, 2000)
+
+            
+
+            function dirLoop(){
+
+                switch (direc) {
+                    case 0:
+                        dLeft += 1;
+                        break;
+                    case 1:
+                        dLeft += 0;
+                        break;
+                    case 2:
+                        dLeft -= 1;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (dLeft <= 5) {
+                    dLeft += 1;
+                }
+
+                if (dLeft >= 280) {
+                    dLeft -= 1;
+                }
+
+                // console.log(dLeft);
+
+                inimigo.style.left = dLeft+'px';
+
+                requestAnimationFrame(dirLoop);
+
+
+            }
+
+            dirLoop();
+
+        }
+
+        direcao()
+
+        function updatePositionPlayer(){
+
+            coordenadasPlayer = pl.getBoundingClientRect();
+            
+
+        }
+
+       
+
+        function arma(){
+
+            console.log(pl)
+
+            const b = c("div", "bala");
+            let yy = veloc;
+            let xx = dLeft;
+
+            let x = pl.dataset.left_el
+            let y = pl.dataset.top_el
+
+            let dif_top = 0;
+            let dif_left = 0;
+
+            if (y > yy) {
+                dif_top = (y - yy);
+            }else{
+                dif_top = (yy - y);
+            }
+
+            if (x > xx) {
+                dif_left = (x - xx);
+            }else{
+                dif_left = (xx - x);
+            }
+
+            console.log(dif_top);
+            console.log(dif_left);
+
+            let disL = dif_left/dif_top
+
+            const palco = document.querySelector(".cena");
+
+            function atirar(){
+
+                b.style.top = yy+"px";
+                b.style.left = xx+"px";
+
+                palco.appendChild(b);
+
+                yy += (2);
+
+                if (xx < x) {
+                    xx += (disL);
+                }else{
+                    xx -= (disL);
+                }
+
+                requestAnimationFrame(atirar);
+
+            }
+
+            atirar();
+
+        }
+
+        arma();
+
+        return inimigo;
 
     }
 
     function player(){
 
-        const a = c("div", 'player');
-        return a;
+        let autitude = 1;
+        let top = 200;
+        let left = 140;
+
+        function render(){
+
+            const a = c("div", 'player');
+            a.setAttribute("data-left_el", left)
+            a.setAttribute("data-top_el", top)
+            const as1 = c("div", 'as1');
+            const as2 = c("div", 'as2');
+
+            console.log(a.getBoundingClientRect())
+        
+            a.appendChild(as1);
+            a.appendChild(as2);
+        
+            return a;
+
+        }
+
+        return render();
 
     }
 
     const player1 = player();
 
-    arrayInimigos.push(AeroInimigo());
-    arrayInimigos.push(AeroInimigo());
+    function addInimigo(){
+
+        const palco = document.querySelector(".cena");
+
+        setInterval(() => {
+
+            palco.appendChild(AeroInimigo(player1));
+            
+        }, 7000);
+
+    }
+
+    addInimigo();
+
+    arrayInimigos.push(AeroInimigo(player1));
     arrayInimigos.push(player1);
 
     function cena(arrInimigos){
 
         const widthCena = 300;
-        let leftt = (widthCena/2)- 10;
+        let leftt = (widthCena/2) - 10;
 
         const palco = document.querySelector(".cena");
 
@@ -167,9 +407,6 @@
             palco.appendChild(arrInimigos[index]);
             
         }
-
-
-        
 
         function tiros1(){
 
@@ -185,16 +422,24 @@
                 t.style.top = ti+"px";
                 t.style.left = leftt+"px";
 
+                if (t) {
+                    if (ti < 0) {
+                        t.parentNode.removeChild(t);
+                        window.cancelAnimationFrame(atirou);
+                        return
+                    }
+                }
+
                 const loop = requestAnimationFrame(atirou);
 
             }
 
             atirou();
-            palco.appendChild(t);
+            if (t) {
+                palco.appendChild(t);
+            }
 
         }
-
-       
 
         const controle = c("div", "controle");
 
@@ -203,7 +448,8 @@
                 const controleP1p1Button = c("div", "controleP1p1Button");
 
                 controleP1p1Button.addEventListener('click', function(){
-                    
+
+                    player1.dataset.left_el -= 10
                     leftt -= 10;
                     player1.style.left = leftt+"px";
                     
@@ -241,6 +487,10 @@
                 const controleP1p2Button22 = c("div", "controleP1p1Button");
 
                 controleP1p2Button22.addEventListener("click", function(){
+
+                    console.log(player1)
+
+                    player1.dataset.left_el = (parseInt(player1.dataset.left_el) + 10)
 
                     leftt += 10;
                     player1.style.left = leftt+"px";
