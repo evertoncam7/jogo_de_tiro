@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aero</title>
+    <style>
+
+        *{
+            padding:0px;
+            margin:0px;
+            box-sizing: border-box;
+        }
+
+        .container{
+            width: 100%;
+            height: 100vh;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cena{
+            position: relative;
+            width: 300px;
+            height: 500px;
+            background: #3754b6;
+        }
+
+        .inimigo{
+            position:absolute;
+            width: 20px;
+            height: 40px;
+            background: greenyellow;
+        }
+
+        .player{
+            position: absolute;
+            left: calc(50% - 10px);
+            bottom: 120px;
+            width: 20px;
+            height: 40px;
+            background: #fff;
+        }
+
+       
+
+        .controle{
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100px;
+           
+            display: flex;
+        }
+
+        .controleP{
+            width: 100%;
+            height: 100%;
+           
+            display: flex;
+        }
+
+        .controlePp1, .controlePp2{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            padding: 10px;
+        }
+
+        .controlePp1{
+            align-items: center;
+            justify-content: center;
+        }
+
+        .controlePp2{
+            align-items: start;
+            justify-content: center;
+        }
+
+        .controleP1p1Button{
+            width:50px;
+            height: 50px;
+            border-radius: 25px;
+            border: 1px solid #fff;
+        }
+
+        .controleP1p2Button{
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            border: 1px solid #fff;
+        }
+
+        .bala{
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background: yellow;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="cena">
+
+        </div>
+
+    </div>
+    
+</body>
+
+<script>
+
+    function c(tag, cls){
+        const el = document.createElement(tag);
+        el.setAttribute('class', cls);
+        return el;
+    }
+
+    const arrayInimigos = [];
+
+    function AeroInimigo(){
+
+        const a = c("div", 'inimigo');
+
+
+
+        function atirar(){
+
+
+
+        }
+
+        return a;
+
+    }
+
+    function player(){
+
+        const a = c("div", 'player');
+        return a;
+
+    }
+
+    const player1 = player();
+
+    arrayInimigos.push(AeroInimigo());
+    arrayInimigos.push(AeroInimigo());
+    arrayInimigos.push(player1);
+
+    function cena(arrInimigos){
+
+        const widthCena = 300;
+        let leftt = (widthCena/2)- 10;
+
+        const palco = document.querySelector(".cena");
+
+        for (let index = 0; index < arrInimigos.length; index++) {
+
+            palco.appendChild(arrInimigos[index]);
+            
+        }
+
+
+        
+
+        function tiros1(){
+
+            let ti = 350;
+
+            console.log('apertou!');
+
+            const t = c("div", "bala");
+
+            function atirou(){
+
+                ti -= 10;
+                t.style.top = ti+"px";
+                t.style.left = leftt+"px";
+
+                const loop = requestAnimationFrame(atirou);
+
+            }
+
+            atirou();
+            palco.appendChild(t);
+
+        }
+
+       
+
+        const controle = c("div", "controle");
+
+        const controleP1 = c("div", "controleP");
+            const controleP1p1 = c("div", "controlePp1");
+                const controleP1p1Button = c("div", "controleP1p1Button");
+
+                controleP1p1Button.addEventListener('click', function(){
+                    
+                    leftt -= 10;
+                    player1.style.left = leftt+"px";
+                    
+                });
+
+                controleP1p1.appendChild(controleP1p1Button);
+
+            const controleP1p2 = c("div", "controlePp2");
+                const controleP1p2Button = c("div", "controleP1p2Button");
+
+                controleP1p2Button.addEventListener("click", function(){
+
+                    tiros1();
+
+                })
+
+                controleP1p2.appendChild(controleP1p2Button);
+
+        controleP1.appendChild(controleP1p1);
+        controleP1.appendChild(controleP1p2);
+
+        const controleP2 = c("div", "controleP");
+            const controleP2p1 = c("div", "controlePp2");
+                const controleP1p2Button2 = c("div", "controleP1p2Button");
+
+                controleP1p2Button2.addEventListener("click", function(){
+
+                    tiros1();
+
+                });
+
+                controleP2p1.appendChild(controleP1p2Button2);
+
+            const controleP2p2 = c("div", "controlePp1");
+                const controleP1p2Button22 = c("div", "controleP1p1Button");
+
+                controleP1p2Button22.addEventListener("click", function(){
+
+                    leftt += 10;
+                    player1.style.left = leftt+"px";
+
+                })
+                controleP2p2.appendChild(controleP1p2Button22);
+
+
+            controleP2.appendChild(controleP2p1);
+            controleP2.appendChild(controleP2p2);
+        
+        controle.appendChild(controleP1);
+        controle.appendChild(controleP2);
+
+        palco.appendChild(controle);
+
+    }
+
+    cena(arrayInimigos);
+
+
+
+
+</script>
+
+
+</html>
